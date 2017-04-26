@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing Airflow &mdash; Airflow Workshop DataEngConf SF 2017</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Airflow Workshop DataEngConf SF 2017" href="index.html" />
+    <link rel="prev" title="Apache Airflow Workshop DataEngConf SF 2017" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-airflow">
+<h1>Installing Airflow<a class="headerlink" href="#installing-airflow" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="preparing-your-machine">
+<h2>Preparing your machine<a class="headerlink" href="#preparing-your-machine" title="Permalink to this headline">¶</a></h2>
+<p>I would recommend installing jupyter and virtualenv for testing.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install virtualenv jupyter
+</pre></div>
+</div>
+<p>For ease of use, I recommend virtualenvwrapper.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install virtualenvwrapper
+<span class="nb">export</span> <span class="nv">WORKON_HOME</span><span class="o">=</span>~/.virtualenvs
+mkdir -p <span class="nv">$WORKON_HOME</span>
+<span class="nb">source</span> /usr/local/bin/virtualenvwrapper.sh
+</pre></div>
+</div>
+<p>We should create a virtualenv for the class</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>mkvirtualenv airflow_workshop
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-airflow">
+<h2>Getting Airflow<a class="headerlink" href="#getting-airflow" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to install the latest stable version of Airflow is with <code class="docutils literal"><span class="pre">pip</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install airflow
+</pre></div>
+</div>
+<p>The current stable version is <code class="docutils literal"><span class="pre">1.8.0</span></code>. You can install this version specifically by using</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install <span class="nv">airflow</span><span class="o">==</span><span class="m">1</span>.8.0
+</pre></div>
+</div>
+<p>As Airflow is still currently evolving a decent amount, I recommend pinning the version
+you use, if you do not feel like living on the bleeding edge.</p>
+<p>You can also install Airflow with support for extra features like <code class="docutils literal"><span class="pre">s3</span></code> or <code class="docutils literal"><span class="pre">mysql</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1">#Install the latest with extras</span>
+pip install airflow<span class="o">[</span>s3,mysql<span class="o">]</span>
+<span class="c1">#Install the 1.8.0 with specific extras</span>
+pip install airflow<span class="o">[</span>s3,mysql<span class="o">]==</span><span class="m">1</span>.8.0
+</pre></div>
+</div>
+<p>Note that this will only install the Python packages needed to talk to some external systems, but not these systems (MySQL needs to be installed separately by your method of choice.)</p>
+<p>The full list of <cite>extras</cite> is available <a class="reference external" href="https://github.com/apache/incubator-airflow/blob/master/setup.py#L249-L289">here</a></p>
+</div>
+<div class="section" id="for-the-workshop">
+<h2>For the workshop<a class="headerlink" href="#for-the-workshop" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1">#This should give you most of what you will need.</span>
+pip install -r reqs/airflowenv_requirements.txt
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installing Airflow</a><ul>
+<li><a class="reference internal" href="#preparing-your-machine">Preparing your machine</a></li>
+<li><a class="reference internal" href="#getting-airflow">Getting Airflow</a></li>
+<li><a class="reference internal" href="#for-the-workshop">For the workshop</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Apache Airflow Workshop DataEngConf SF 2017</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/installing_airflow.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Arthur Wiedmer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/installing_airflow.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
