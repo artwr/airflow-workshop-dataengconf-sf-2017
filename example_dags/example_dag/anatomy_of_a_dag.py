@@ -4,33 +4,32 @@ what problem space the DAG is looking at.
 Links to design documents, upstream dependencies etc
 are highly recommended.
 """
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from airflow.models import DAG  # Import the DAG class
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.sensors import TimeDeltaSensor
 
-d = date.today()
-
 default_args = {
-    'owner': 'your_ldap',
+    'owner': 'you',
     'depends_on_past': False,
-    'start_date': datetime(d.year, d.month, d.day) - timedelta(days=7),
-    'email': ['yourteam@airbnb.com', 'yourself@airbnb.com'],
+    'start_date': datetime(2017, 4, 21),
+    # You want an owner and possibly a team alias
+    'email': ['yourteam@example.com', 'you@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
-    # 'queue': 'default',    # 'default' or 'silver' or 'backfill'
+    # 'pool': 'default',
 }
 
 dag = DAG(
-    'DATAU302_example_dag',
+    dag_id='anatomy_of_a_dag',
+    description="This describes my DAG",
     default_args=default_args,
-    description="This will show up in the DAG view in the web UI",
     schedule_interval=timedelta(days=1))   # This is a daily DAG.
 
-# t1, t2 and t3 are examples of tasks created by instantiating operators
+# t0, t1, t2 and t3 are examples of tasks created by instantiating operators
 t0 = TimeDeltaSensor(
     task_id='wait_a_second',
     delta=timedelta(seconds=1),
@@ -70,11 +69,13 @@ t3 = BashOperator(
     params={'my_param': 'This is my parameter value'},
     dag=dag)
 
+# Setting dependencies using task objects
+
 t1.set_upstream(t0)
 t2.set_upstream(t1)
 t3.set_upstream(t1)
 
-
+# Setting dependencies using task_id
 # deps = {
 #     'wait_a_second': ['print_date'],
 #     'print_date': ['show_ds'],

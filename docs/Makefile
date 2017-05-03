@@ -29,9 +29,9 @@ help:
 
 clean:
 	rm -rf build/*
-	rm *.html
-	rm *.inv
-	rm *.js
+	rm -f *.html
+	rm -f *.inv
+	rm -f *.js
 	rm -rf _static
 	rm -rf _sources
 
