@@ -23,9 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Airflow Workshop DataEngConf SF 2017" href="#" />
-    <link rel="next" title="Installing Airflow" href="installing_airflow.html" />
+    <link rel="next" title="Setup your machine for the workshop" href="prepare_your_machine.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -46,10 +45,36 @@
 <div class="toctree-wrapper compound" id="contents">
 <p class="caption"><span class="caption-text">Contents:</span><a class="headerlink" href="#contents" title="Permalink to this toctree">¶</a></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installing_airflow.html">Installing Airflow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installing_airflow.html#preparing-your-machine">Preparing your machine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installing_airflow.html#getting-airflow">Getting Airflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installing_airflow.html#for-the-workshop">For the workshop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare_your_machine.html">Setup your machine for the workshop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="prepare_your_machine.html#what-you-should-have">What you should have</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prepare_your_machine.html#automated-setup">Automated setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prepare_your_machine.html#manual-setup">Manual Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="prepare_your_machine.html#get-juyter-and-virtualenv">Get Juyter and virtualenv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="prepare_your_machine.html#virtualenvwrapper">Virtualenvwrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="prepare_your_machine.html#virtualenv">Virtualenv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="prepare_your_machine.html#installing-airflow">Installing Airflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="anatomy_of_a_dag.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#example-pipeline-definition">Example Pipeline definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#it-s-a-dag-definition-file">It&#8217;s a DAG definition file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#importing-modules">Importing Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#default-arguments">Default Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#instantiate-a-dag">Instantiate a DAG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#tasks">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#templating-with-jinja">Templating with Jinja</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#setting-up-dependencies">Setting up Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#recap">Recap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anatomy_of_a_dag.html#running-the-script">Running the Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anatomy_of_a_dag.html#command-line-metadata-validation">Command Line Metadata Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anatomy_of_a_dag.html#id1">Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anatomy_of_a_dag.html#backfill">Backfill</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anatomy_of_a_dag.html#what-s-next">What&#8217;s Next?</a></li>
 </ul>
 </li>
 </ul>
@@ -78,7 +103,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="installing_airflow.html" title="next chapter">Installing Airflow</a></li>
+      <li>Next: <a href="prepare_your_machine.html" title="next chapter">Setup your machine for the workshop</a></li>
   </ul></li>
 </ul>
 </div>

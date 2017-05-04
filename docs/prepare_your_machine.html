@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installing Airflow &mdash; Airflow Workshop DataEngConf SF 2017</title>
+    <title>Setup your machine for the workshop &mdash; Airflow Workshop DataEngConf SF 2017</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Airflow Workshop DataEngConf SF 2017" href="index.html" />
+    <link rel="next" title="Tutorial" href="anatomy_of_a_dag.html" />
     <link rel="prev" title="Apache Airflow Workshop DataEngConf SF 2017" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -41,28 +41,55 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="installing-airflow">
-<h1>Installing Airflow<a class="headerlink" href="#installing-airflow" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="preparing-your-machine">
-<h2>Preparing your machine<a class="headerlink" href="#preparing-your-machine" title="Permalink to this headline">¶</a></h2>
-<p>I would recommend installing jupyter and virtualenv for testing.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install virtualenv jupyter
+  <div class="section" id="setup-your-machine-for-the-workshop">
+<h1>Setup your machine for the workshop<a class="headerlink" href="#setup-your-machine-for-the-workshop" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-you-should-have">
+<h2>What you should have<a class="headerlink" href="#what-you-should-have" title="Permalink to this headline">¶</a></h2>
+<p>Your machine should have the following installed :
+* Python (&gt;2.7.10 at least for Python 2 or &gt;3.4 for Python 3). If you are on OSX, installing homebrew and the homebrew python is highly recommended as well.
+* SQLite (It should be installed on most systems)
+* Upgrading pip is recommended.</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span></span>pip install --user --upgrade pip
 </pre></div>
 </div>
-<p>For ease of use, I recommend virtualenvwrapper.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install virtualenvwrapper
+</div></blockquote>
+</div>
+<div class="section" id="automated-setup">
+<h2>Automated setup<a class="headerlink" href="#automated-setup" title="Permalink to this headline">¶</a></h2>
+<p>A script is provided to install most dependencies in this. Simply run scripts/setup.sh located <a class="reference external" href="https://github.com/artwr/airflow-workshop-dataengconf-sf-2017/blob/master/scripts/setup.sh">here</a> from the root of this git repository.</p>
+</div>
+<div class="section" id="manual-setup">
+<h2>Manual Setup<a class="headerlink" href="#manual-setup" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="get-juyter-and-virtualenv">
+<h3>Get Juyter and virtualenv<a class="headerlink" href="#get-juyter-and-virtualenv" title="Permalink to this headline">¶</a></h3>
+<p>I would recommend installing jupyter and virtualenv for testing.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install -U --user virtualenv jupyter
+</pre></div>
+</div>
+</div>
+<div class="section" id="virtualenvwrapper">
+<h3>Virtualenvwrapper<a class="headerlink" href="#virtualenvwrapper" title="Permalink to this headline">¶</a></h3>
+<p>For ease of use I recommend virtualenvwrapper, but this is completely optional.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install --user virtualenvwrapper
 <span class="nb">export</span> <span class="nv">WORKON_HOME</span><span class="o">=</span>~/.virtualenvs
 mkdir -p <span class="nv">$WORKON_HOME</span>
 <span class="nb">source</span> /usr/local/bin/virtualenvwrapper.sh
+rmvirtualenv airflow_workshop
+mkvirtualenv airflow_workshop
 </pre></div>
 </div>
-<p>We should create a virtualenv for the class</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>mkvirtualenv airflow_workshop
+</div>
+<div class="section" id="virtualenv">
+<h3>Virtualenv<a class="headerlink" href="#virtualenv" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>rm -rf airflow_workshop
+virtualenv airflow_workshop
+<span class="nb">source</span> airflow_workshop/bin/activate
 </pre></div>
 </div>
 </div>
-<div class="section" id="getting-airflow">
-<h2>Getting Airflow<a class="headerlink" href="#getting-airflow" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installing-airflow">
+<h3>Installing Airflow<a class="headerlink" href="#installing-airflow" title="Permalink to this headline">¶</a></h3>
 <p>The easiest way to install the latest stable version of Airflow is with <code class="docutils literal"><span class="pre">pip</span></code>:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>pip install airflow
 </pre></div>
@@ -81,13 +108,7 @@ pip install airflow<span class="o">[</span>s3,mysql<span class="o">]==</span><sp
 </pre></div>
 </div>
 <p>Note that this will only install the Python packages needed to talk to some external systems, but not these systems (MySQL needs to be installed separately by your method of choice.)</p>
-<p>The full list of <cite>extras</cite> is available <a class="reference external" href="https://github.com/apache/incubator-airflow/blob/master/setup.py#L249-L289">here</a></p>
-</div>
-<div class="section" id="for-the-workshop">
-<h2>For the workshop<a class="headerlink" href="#for-the-workshop" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1">#This should give you most of what you will need.</span>
-pip install -r reqs/airflowenv_requirements.txt
-</pre></div>
+<p>The current list of <cite>extras</cite> is available <a class="reference external" href="https://github.com/apache/incubator-airflow/blob/master/setup.py#L249-L289">here</a> and an older version can be found in the <a class="reference external" href="https://airflow.incubator.apache.org/installation.html#extra-packages">docs</a></p>
 </div>
 </div>
 </div>
@@ -100,10 +121,16 @@ pip install -r reqs/airflowenv_requirements.txt
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Installing Airflow</a><ul>
-<li><a class="reference internal" href="#preparing-your-machine">Preparing your machine</a></li>
-<li><a class="reference internal" href="#getting-airflow">Getting Airflow</a></li>
-<li><a class="reference internal" href="#for-the-workshop">For the workshop</a></li>
+<li><a class="reference internal" href="#">Setup your machine for the workshop</a><ul>
+<li><a class="reference internal" href="#what-you-should-have">What you should have</a></li>
+<li><a class="reference internal" href="#automated-setup">Automated setup</a></li>
+<li><a class="reference internal" href="#manual-setup">Manual Setup</a><ul>
+<li><a class="reference internal" href="#get-juyter-and-virtualenv">Get Juyter and virtualenv</a></li>
+<li><a class="reference internal" href="#virtualenvwrapper">Virtualenvwrapper</a></li>
+<li><a class="reference internal" href="#virtualenv">Virtualenv</a></li>
+<li><a class="reference internal" href="#installing-airflow">Installing Airflow</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -112,13 +139,14 @@ pip install -r reqs/airflowenv_requirements.txt
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Apache Airflow Workshop DataEngConf SF 2017</a></li>
+      <li>Next: <a href="anatomy_of_a_dag.html" title="next chapter">Tutorial</a></li>
   </ul></li>
 </ul>
 </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/installing_airflow.txt"
+      <li><a href="_sources/prepare_your_machine.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -144,7 +172,7 @@ pip install -r reqs/airflowenv_requirements.txt
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
-      <a href="_sources/installing_airflow.txt"
+      <a href="_sources/prepare_your_machine.txt"
           rel="nofollow">Page source</a>
     </div>
 
