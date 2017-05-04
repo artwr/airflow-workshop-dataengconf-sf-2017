@@ -23,8 +23,8 @@ A script is provided to install most dependencies in this. Simply run scripts/se
 Manual Setup
 ------------
 
-Get Juyter and virtualenv
-'''''''''''''''''''''''''
+Get Jupyter and virtualenv
+''''''''''''''''''''''''''
 
 I would recommend installing jupyter and virtualenv for testing.
 
