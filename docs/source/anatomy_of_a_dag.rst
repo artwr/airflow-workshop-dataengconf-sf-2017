@@ -1,5 +1,5 @@
 
-Tutorial
+Anatomy of a DAG
 ================
 
 This tutorial walks you through some of the fundamental Airflow concepts,
@@ -14,42 +14,61 @@ complicated, a line by line explanation follows below.
 .. code:: python
 
     """
-    Code that goes along with the Airflow tutorial located at:
-    https://github.com/airbnb/airflow/blob/master/airflow/example_dags/tutorial.py
+    A DAG docstring might be a good way to explain at a high level
+    what problem space the DAG is looking at.
+    Links to design documents, upstream dependencies etc
+    are highly recommended.
     """
-    from airflow import DAG
-    from airflow.operators.bash_operator import BashOperator
     from datetime import datetime, timedelta
-
+    from airflow.models import DAG  # Import the DAG class
+    from airflow.operators.bash_operator import BashOperator
+    from airflow.operators.python_operator import PythonOperator
+    from airflow.operators.sensors import TimeDeltaSensor
 
     default_args = {
-        'owner': 'airflow',
+        'owner': 'you',
         'depends_on_past': False,
-        'start_date': datetime(2015, 6, 1),
-        'email': ['airflow@airflow.com'],
+        'start_date': datetime(2017, 4, 21),
+        # You want an owner and possibly a team alias
+        'email': ['yourteam@example.com', 'you@example.com'],
         'email_on_failure': False,
         'email_on_retry': False,
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
-        # 'queue': 'bash_queue',
-        # 'pool': 'backfill',
-        # 'priority_weight': 10,
-        # 'end_date': datetime(2016, 1, 1),
+        # 'pool': 'default',
     }
 
-    dag = DAG('tutorial', default_args=default_args)
+    dag = DAG(
+        dag_id='anatomy_of_a_dag',
+        description="This describes my DAG",
+        default_args=default_args,
+        schedule_interval=timedelta(days=1))   # This is a daily DAG.
 
-    # t1, t2 and t3 are examples of tasks created by instantiating operators
+    # t0, t1, t2 and t3 are examples of tasks created by instantiating operators
+    t0 = TimeDeltaSensor(
+        task_id='wait_a_second',
+        delta=timedelta(seconds=1),
+        dag=dag)
+
     t1 = BashOperator(
         task_id='print_date',
         bash_command='date',
         dag=dag)
 
-    t2 = BashOperator(
-        task_id='sleep',
-        bash_command='sleep 5',
+
+    def my_cool_function(ds=None, **kwargs):
+        print "{}".format(ds)
+
+
+    t2 = PythonOperator(
+        task_id='show_ds',
+        python_callable=my_cool_function,
         retries=3,
+        provide_context=True,
         dag=dag)
+
+    # Airflow uses a templating language called Jinja
+    #
 
     templated_command = """
         {% for i in range(5) %}
@@ -60,11 +79,14 @@ complicated, a line by line explanation follows below.
     """
 
     t3 = BashOperator(
-        task_id='templated',
+        task_id='templated_task',
         bash_command=templated_command,
-        params={'my_param': 'Parameter I passed in'},
+        params={'my_param': 'This is my parameter value'},
         dag=dag)
 
+    # Setting dependencies using task objects
+
+    t1.set_upstream(t0)
     t2.set_upstream(t1)
     t3.set_upstream(t1)
 
@@ -96,11 +118,14 @@ Airflow DAG object. Let's start by importing the libraries we will need.
 
 .. code:: python
 
-    # The DAG object; we'll need this to instantiate a DAG
-    from airflow import DAG
-
-    # Operators; we need this to operate!
+    # Import other librabries
+    from datetime import datetime, timedelta
+    # Import the DAG class
+    from airflow.models import DAG
+    # Import Operators.
     from airflow.operators.bash_operator import BashOperator
+    from airflow.operators.python_operator import PythonOperator
+    from airflow.operators.sensors import TimeDeltaSensor
 
 Default Arguments
 -----------------
@@ -114,22 +139,20 @@ of default parameters that we can use when creating tasks.
     from datetime import datetime, timedelta
 
     default_args = {
-        'owner': 'airflow',
+        'owner': 'you',
         'depends_on_past': False,
-        'start_date': datetime(2015, 6, 1),
-        'email': ['airflow@airflow.com'],
+        'start_date': datetime(2017, 4, 21),
+        # You want an owner and possibly a team alias
+        'email': ['yourteam@example.com', 'you@example.com'],
         'email_on_failure': False,
         'email_on_retry': False,
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
-        # 'queue': 'bash_queue',
-        # 'pool': 'backfill',
-        # 'priority_weight': 10,
-        # 'end_date': datetime(2016, 1, 1),
+        # 'pool': 'default',
     }
 
 For more information about the BaseOperator's parameters and what they do,
-refer to the :py:class:``airflow.models.BaseOperator`` documentation.
+refer to the ``airflow.models.BaseOperator`` documentation.
 
 Also, note that you could easily define different sets of arguments that
 would serve different purposes. An example of that would be to have
@@ -147,7 +170,10 @@ define a ``schedule_interval`` of 1 day for the DAG.
 .. code:: python
 
     dag = DAG(
-        'tutorial', default_args=default_args, schedule_interval=timedelta(1))
+    dag_id='anatomy_of_a_dag',
+    description="This describes my DAG",
+    default_args=default_args,
+    schedule_interval=timedelta(days=1))   # This is a daily DAG.
 
 Tasks
 -----
@@ -157,15 +183,14 @@ instantiated from an operator is called a constructor. The first argument
 
 .. code:: python
 
+    t0 = TimeDeltaSensor(
+        task_id='wait_a_second',
+        delta=timedelta(seconds=1),
+        dag=dag)
+
     t1 = BashOperator(
         task_id='print_date',
         bash_command='date',
-        dag=dag)
-
-    t2 = BashOperator(
-        task_id='sleep',
-        bash_command='sleep 5',
-        retries=3,
         dag=dag)
 
 Notice how we pass a mix of operator specific arguments (``bash_command``) and
@@ -222,9 +247,31 @@ The ``params`` hook in ``BaseOperator`` allows you to pass a dictionary of
 parameters and/or objects to your templates. Please take the time
 to understand how the parameter ``my_param`` makes it through to the template.
 
+PythonOperator
+--------------
+
+The ``PythonOperator`` can execute an arbitrary Python callable (usually a function). The provide context flag can be useful if you want your function to be passed the Jinja context variables like ``ds``. In this case you can either add the parameter you want to your function signature, and add ``**kwargs`` to store the other parameters.
+
+.. code:: python
+
+    def my_cool_function(ds=None, **kwargs):
+    print "{}".format(ds)
+
+
+    t2 = PythonOperator(
+        task_id='show_ds',
+        python_callable=my_cool_function,
+        retries=3,
+        provide_context=True,
+        dag=dag)
+
+
+Separating Workflow definition and task definition
+--------------------------------------------------
+
 Files can also be passed to the ``bash_command`` argument, like
 ``bash_command='templated_command.sh'``, where the file location is relative to
-the directory containing the pipeline file (``tutorial.py`` in this case). This
+the directory containing the pipeline file (``anatomy_of_a_dag.py`` in this case). This
 may be desirable for many reasons, like separating your script's logic and
 pipeline code, allowing for proper code highlighting in files composed in
 different languages, and general flexibility in structuring pipelines. It is
@@ -251,7 +298,7 @@ you can define dependencies between them:
     t3.set_upstream(t1)
 
     # all of this is equivalent to
-    # dag.set_dependency('print_date', 'sleep')
+    # dag.set_dependency('print_date', 'show_ds')
     # dag.set_dependency('print_date', 'templated')
 
 Note that when executing your script, Airflow will raise exceptions when
@@ -266,43 +313,61 @@ something like this:
 .. code:: python
 
     """
-    Code that goes along with the Airflow located at:
-    http://airflow.readthedocs.org/en/latest/tutorial.html
+    A DAG docstring might be a good way to explain at a high level
+    what problem space the DAG is looking at.
+    Links to design documents, upstream dependencies etc
+    are highly recommended.
     """
-    from airflow import DAG
-    from airflow.operators.bash_operator import BashOperator
     from datetime import datetime, timedelta
-
+    from airflow.models import DAG  # Import the DAG class
+    from airflow.operators.bash_operator import BashOperator
+    from airflow.operators.python_operator import PythonOperator
+    from airflow.operators.sensors import TimeDeltaSensor
 
     default_args = {
-        'owner': 'airflow',
+        'owner': 'you',
         'depends_on_past': False,
-        'start_date': datetime(2015, 6, 1),
-        'email': ['airflow@airflow.com'],
+        'start_date': datetime(2017, 4, 21),
+        # You want an owner and possibly a team alias
+        'email': ['yourteam@example.com', 'you@example.com'],
         'email_on_failure': False,
         'email_on_retry': False,
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
-        # 'queue': 'bash_queue',
-        # 'pool': 'backfill',
-        # 'priority_weight': 10,
-        # 'end_date': datetime(2016, 1, 1),
+        # 'pool': 'default',
     }
 
     dag = DAG(
-        'tutorial', default_args=default_args, schedule_interval=timedelta(1))
+        dag_id='anatomy_of_a_dag',
+        description="This describes my DAG",
+        default_args=default_args,
+        schedule_interval=timedelta(days=1))   # This is a daily DAG.
 
-    # t1, t2 and t3 are examples of tasks created by instantiating operators
+    # t0, t1, t2 and t3 are examples of tasks created by instantiating operators
+    t0 = TimeDeltaSensor(
+        task_id='wait_a_second',
+        delta=timedelta(seconds=1),
+        dag=dag)
+
     t1 = BashOperator(
         task_id='print_date',
         bash_command='date',
         dag=dag)
 
-    t2 = BashOperator(
-        task_id='sleep',
-        bash_command='sleep 5',
+
+    def my_cool_function(ds=None, **kwargs):
+        print "{}".format(ds)
+
+
+    t2 = PythonOperator(
+        task_id='show_ds',
+        python_callable=my_cool_function,
         retries=3,
+        provide_context=True,
         dag=dag)
+
+    # Airflow uses a templating language called Jinja
+    #
 
     templated_command = """
         {% for i in range(5) %}
@@ -313,11 +378,14 @@ something like this:
     """
 
     t3 = BashOperator(
-        task_id='templated',
+        task_id='templated_task',
         bash_command=templated_command,
-        params={'my_param': 'Parameter I passed in'},
+        params={'my_param': 'This is my parameter value'},
         dag=dag)
 
+    # Setting dependencies using task objects
+
+    t1.set_upstream(t0)
     t2.set_upstream(t1)
     t3.set_upstream(t1)
 
@@ -329,12 +397,12 @@ Running the Script
 
 Time to run some tests. First let's make sure that the pipeline
 parses. Let's assume we're saving the code from the previous step in
-``tutorial.py`` in the DAGs folder referenced in your ``airflow.cfg``.
+``anatomy_of_a_dag.py`` in the DAGs folder referenced in your ``airflow.cfg``.
 The default location for your DAGs is ``~/airflow/dags``.
 
 .. code-block:: bash
 
-    python ~/airflow/dags/tutorial.py
+    python ~/airflow/dags/anatomy_of_a_dag.py
 
 If the script does not raise an exception it means that you haven't done
 anything horribly wrong, and that your Airflow environment is somewhat
@@ -350,10 +418,10 @@ Let's run a few commands to validate this script further.
     airflow list_dags
 
     # prints the list of tasks the "tutorial" dag_id
-    airflow list_tasks tutorial
+    airflow list_tasks anatomy_of_a_dag
 
     # prints the hierarchy of tasks in the tutorial DAG
-    airflow list_tasks tutorial --tree
+    airflow list_tasks anatomy_of_a_dag --tree
 
 
 Testing
@@ -367,10 +435,10 @@ scheduler running your task or dag at a specific date + time:
     # command layout: command subcommand dag_id task_id date
 
     # testing print_date
-    airflow test tutorial print_date 2015-06-01
+    airflow test anatomy_of_a_dag print_date 2015-06-01
 
     # testing sleep
-    airflow test tutorial sleep 2015-06-01
+    airflow test anatomy_of_a_dag show_ds 2015-06-01
 
 Now remember what we did with templating earlier? See how this template
 gets rendered and executed by running this command:
@@ -378,7 +446,7 @@ gets rendered and executed by running this command:
 .. code-block:: bash
 
     # testing templated
-    airflow test tutorial templated 2015-06-01
+    airflow test anatomy_of_a_dag templated 2015-06-01
 
 This should result in displaying a verbose log of events and ultimately
 running your bash command and printing the result.
@@ -387,6 +455,7 @@ Note that the ``airflow test`` command runs task instances locally, outputs
 their log to stdout (on screen), doesn't bother with dependencies, and
 doesn't communicate state (running, success, failed, ...) to the database.
 It simply allows testing a single task instance.
+
 
 Backfill
 ''''''''
