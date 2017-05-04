@@ -4,34 +4,43 @@ what problem space the DAG is looking at.
 Links to design documents, upstream dependencies etc
 are highly recommended.
 """
-from datetime import datetime, timedelta
+import os
+import pwd
+from datetime import date, datetime, timedelta
 from airflow.models import DAG  # Import the DAG class
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
-from airflow.operators.sensors import TimeDeltaSensor
+from airflow.operators.sqlite_operator import SQliteOperator
+from airflow.operators.sensors import SqlSensor
+
+d = date.today()
+
+
+def get_username():
+    return pwd.getpwuid(os.getuid())[0]
+
+
+user = get_username()
 
 default_args = {
-    'owner': 'you',
+    'owner': user,
     'depends_on_past': False,
-    'start_date': datetime(2017, 4, 21),
-    # You want an owner and possibly a team alias
-    'email': ['yourteam@example.com', 'you@example.com'],
+    'start_date': datetime(d.year, d.month, d.day) - timedelta(days=7),
+    'email': ['yourself@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
-    # 'pool': 'default',
 }
 
 dag = DAG(
-    dag_id='anatomy_of_a_dag',
-    description="This describes my DAG",
+    'sqlite_example_dag_' + user.replace('.', ''),
     default_args=default_args,
-    schedule_interval=timedelta(days=1))   # This is a daily DAG.
+    schedule_interval=timedelta(days=1))
 
-# t0, t1, t2 and t3 are examples of tasks created by instantiating operators
-t0 = TimeDeltaSensor(
-    task_id='wait_a_second',
+# t1, t2 and t3 are examples of tasks created by instantiating operators
+t0 = SqlSensor(
+    task_id='check_babynames_tables',
     delta=timedelta(seconds=1),
     dag=dag)
 
@@ -69,17 +78,22 @@ t3 = BashOperator(
     params={'my_param': 'This is my parameter value'},
     dag=dag)
 
-# Setting dependencies using task objects
-
 t1.set_upstream(t0)
 t2.set_upstream(t1)
 t3.set_upstream(t1)
 
-# Setting dependencies using task_id
+t4 = SQliteOperator(
+    'sqlite',
+    sql='SELECT state, COUNT(1) FROM babynames GROUP BY state',
+    sqlite_conn_id='babynames',
+    dag=dag
+)
+
+t4.set_upstream(t3)
 # deps = {
-#     'print_date': ['wait_a_second'],
-#     'show_ds': ['print_date'],
-#     'templated_task': ['print_date'],
+#     'wait_a_second': ['print_date'],
+#     'print_date': ['show_ds'],
+#     'show_ds': ['templated_task'],
 # }
 
 # for downstream, upstream_list in deps.items():

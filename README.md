@@ -6,7 +6,7 @@ Welcome!
 
 The official documentation can be seen [here](https://airflow.incubator.apache.org/).
 
-The sphinx documentation for this workshop is [here](https://airflow.incubator.apache.org/).
+The sphinx documentation for this workshop is [here](https://artwr.github.io/airflow-workshop-dataengconf-sf-2017/).
 
 
 
