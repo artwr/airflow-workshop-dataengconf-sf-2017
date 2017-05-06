@@ -417,10 +417,10 @@ Let's run a few commands to validate this script further.
     # print the list of active DAGs
     airflow list_dags
 
-    # prints the list of tasks the "tutorial" dag_id
+    # prints the list of tasks the "anatomy_of_a_dag" dag_id
     airflow list_tasks anatomy_of_a_dag
 
-    # prints the hierarchy of tasks in the tutorial DAG
+    # prints the hierarchy of tasks in the anatomy_of_a_dag DAG
     airflow list_tasks anatomy_of_a_dag --tree
 
 
@@ -478,7 +478,7 @@ which are used to populate the run schedule with task instances from this dag.
     # airflow webserver --debug &
 
     # start your backfill on a date range
-    airflow backfill tutorial -s 2015-06-01 -e 2015-06-07
+    airflow backfill anatomy_of_a_dag -s 2015-06-01 -e 2015-06-07
 
 What's Next?
 -------------

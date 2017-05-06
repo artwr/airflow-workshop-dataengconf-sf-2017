@@ -420,10 +420,10 @@ sound.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># print the list of active DAGs</span>
 airflow list_dags
 
-<span class="c1"># prints the list of tasks the &quot;tutorial&quot; dag_id</span>
+<span class="c1"># prints the list of tasks the &quot;anatomy_of_a_dag&quot; dag_id</span>
 airflow list_tasks anatomy_of_a_dag
 
-<span class="c1"># prints the hierarchy of tasks in the tutorial DAG</span>
+<span class="c1"># prints the hierarchy of tasks in the anatomy_of_a_dag DAG</span>
 airflow list_tasks anatomy_of_a_dag --tree
 </pre></div>
 </div>
@@ -471,7 +471,7 @@ which are used to populate the run schedule with task instances from this dag.</
 <span class="c1"># airflow webserver --debug &amp;</span>
 
 <span class="c1"># start your backfill on a date range</span>
-airflow backfill tutorial -s <span class="m">2015</span>-06-01 -e <span class="m">2015</span>-06-07
+airflow backfill anatomy_of_a_dag -s <span class="m">2015</span>-06-01 -e <span class="m">2015</span>-06-07
 </pre></div>
 </div>
 </div>
